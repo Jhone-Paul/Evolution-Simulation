@@ -8,4 +8,4 @@ This project is an implementation of a simple neural network in Rust. It include
 
 ## References
 
-For the beggining of this project I followed the tutorial by  [patryk27](https://pwy.io/posts/learning-to-fly-pt1/). I intend to add otehr features to the neural network this is just a jumping off point and my first project in rust. 
+For the beggining of this project I followed the tutorial by  [patryk27](https://pwy.io/posts/learning-to-fly-pt1/). I intend to add other features to the neural network this is just a jumping off point and my first project in rust. 
