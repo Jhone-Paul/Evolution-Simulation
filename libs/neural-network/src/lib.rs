@@ -1,18 +1,6 @@
 //dependencies
 use rand::Rng;
 
-// using this error crate 
-pub type Result<T> = std::result::Result<T, Error>;
-
-#[derive(Debug, Error)]
-pub enum Error {
-    #[error("got {got} inputs, but {expected} inputs were expected")]
-    MismatchedInputSize {
-        got: usize,
-        expected: usize,
-    },
-}
-
 // Define the Network, Layer, and Neuron structs
 #[derive(Debug)]
 pub struct Network {
@@ -26,7 +14,7 @@ pub struct LayerTopology {
 
 impl Network {
 
-    pub fn random(layers: &<LayerTopology>) -> Self {
+    pub fn random(layers: &[LayerTopology]) -> Self {
         let layers = layers
             .windows(2)
             .map(|layers| Layer::random(layers[0].neurons, layers[1].neurons))
@@ -36,13 +24,11 @@ impl Network {
     }
 
     //getting rid of the rebinding is very rustic!
-    pub fn propagate(&self, mut inputs: Vec<f32>) -> Vec<f32> {
+    pub fn propagate(&self,inputs: Vec<f32>) -> Vec<f32> {
 
-        for layer in &self.layers {
-            inputs = layer.propogate(inputs);
-        }
-
-        inputs
+        self.layers
+        .iter()
+        .fold(inputs, |inputs, layer| layer.propagate(inputs))
     }
 }
 
@@ -92,14 +78,9 @@ impl Neuron {
         Self { bias, weights }
     }
 
-    fn propagate(&self, inputs: &<f32>) -> f32 {
+    fn propagate(&self, inputs: &[f32]) -> f32 {
 
-        if inputs.len() != self.weights.len() {
-            return Err(Error::MismatchedInputSize {
-                got: inputs.len(),
-                expected: self.weights.len(),
-            });
-        }
+        assert_eq!(inputs.len(), self.weights.len());
 
         let output = inputs
             .iter()
